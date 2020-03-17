@@ -1,0 +1,19 @@
+saveGame.productionValues[x]:
+ValueAmount: float
+Level: int
+Auto: bool
+Multiplier: float
+
+-
+
+Productions:
+requiredAmount: int
+Name: string
+Currency: string
+ExpenseScale: float
+Timer: int
+
+-
+
+ProductionGUI:
+startProd: void //When production starts
