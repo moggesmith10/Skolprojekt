@@ -13,6 +13,10 @@ Currency: string
 ExpenseScale: float
 Timer: int
 
+    upgrades:
+    type: int
+    //0: Multiplier (ex. val of 1.2 = 20% increase)
+    value: float
 -
 
 ProductionGUI:

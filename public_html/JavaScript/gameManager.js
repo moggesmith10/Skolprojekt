@@ -36,43 +36,70 @@ function prepProductions() {
     }
 }
 function unlockProductions(startAt) {
+    updateSaveGame();
     //If free or enough value
-    if ((Productions[startAt].RequiredAmount == "free")) {
-        productionElements[startAt] = new productionGUI(Productions[startAt], emptyProductionValues, startAt);//Create new GUI-element
+    //JSON.parse(JSON.stringify(emptyProductionValues)) is needed to clone and not refer
+    if ((Productions[startAt].requiredAmount == "free")) {
+        productionElements[startAt] = new productionGUI(Productions[startAt], JSON.parse(JSON.stringify(emptyProductionValues)), startAt);//Create new GUI-element
         saveGame.productionValues[startAt] = emptyProductionValues;//Add new values into savegame
         startAt++;
     }
-    else if (saveGame.productionValues[startAt - 1].ValueAmount >= Productions[startAt].RequiredAmount) {
-        productionElements[startAt] = new productionGUI(Productions[startAt], emptyProductionValues, startAt);//Create new GUI-element
+    else if (saveGame.productionValues[startAt - 1].valueAmount >= Productions[startAt].requiredAmount) {
+        productionElements[startAt] = new productionGUI(Productions[startAt], JSON.parse(JSON.stringify(emptyProductionValues)), startAt);//Create new GUI-element
         saveGame.productionValues[startAt] = emptyProductionValues;//Add new values into savegame
         startAt++;
     }
     nextUnlock = startAt;
 }
 function logOut() {
+    updateSaveGame();
+    saveSaveGame(saveGame, token);
+    discardToken(token);
+    token = null; //Clear for safetys sake
+    Cookies.set("token", null);
+    location.replace("index.html");
+}
+function startProd(id) {
+    prodElement = productionElements[id];
+
+    if (prodElement.running == false) {
+        setTimeout(function () { stopProd(id) }, prodElement.production.timer);
+        prodElement.running = true;
+        prodElement.loading.style.animationDuration = prodElement.production.timer / 1000 + "s";
+        prodElement.loading.style.animationPlayState = "initial";
+    }
+}
+
+function stopProd(id) {
+    prodElement = productionElements[id];
+
+    prodElement.values.valueAmount += prodElement.values.level * prodElement.values.multiplier;
+    if (prodElement.values.auto) prodElement.startProd();
+    prodElement.valueAmountText.innerHTML = prodElement.values.valueAmount;
+    prodElement.running = false;
+    prodElement.loading.style.animationPlayState = "initial";
+    prodElement.loading.style.animationPlayState = "paused";
+    unlockProductions(nextUnlock); //Check if next prod is unlocked yet
+}
+function levelUp(id) {
+    prodElement = productionElements[id];
+
+    if (prodElement.values.valueAmount >= prodElement.levelUpCost) {
+        prodElement.values.level += 1;
+        prodElement.values.valueAmount -= prodElement.levelUpCost;
+        prodElement.levelUpCost *= prodElement.production.expenseScale;
+
+        //Round Values
+        prodElement.levelUpCost = Math.round(prodElement.levelUpCost * 100) / 100;
+        prodElement.values.valueAmount = Math.round(prodElement.values.valueAmount * 100) / 100;
+
+        //Update GUI
+        prodElement.valueAmountText.innerHTML = prodElement.values.valueAmount;
+        prodElement.updateLevel();
+    }
+}
+function updateSaveGame() {
     for (i = 0; i < productionElements.length; i++) {
         saveGame.productionValues[i] = productionElements[i].values;
     }
-    saveSaveGame(saveGame, token);
-    discardToken(token);
-    location.replace("index.html");
-}
-function startProd(id){
-    if(productionElements[id].running == false){
-    setTimeout(function(){ stopProd(id)}, productionElements[id].production.Timer);
-    productionElements[id].running = true;
-    }
-}
-
-function stopProd(id){
-    prodElement = productionElements[id];
-
-    prodElement.values.ValueAmount += prodElement.values.Level * prodElement.values.Multiplier;
-    if (prodElement.values.Auto) prodElement.startProd();
-    prodElement.valueAmountText.innerHTML = prodElement.values.ValueAmount;
-    prodElement.running = false;
-    unlockProductions(nextUnlock); //Check if next prod is unlocked yet
-}
-function levelUp(id){
-    productionElements[id].levelUpFunc();
 }
