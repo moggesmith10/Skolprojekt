@@ -18,13 +18,13 @@ function prepProductions() {
     let i = 0;
     //Load unlocked productions
     while (true) {
-        if (saveGame.productionValues) {
-            if (saveGame.productionValues[i]) {
+        if (saveGame.productionValues) { //Make sure productionValues is set, else create a new one
+            if (saveGame.productionValues[i]) { //If has saved values, assume is unlocked
                 productionElements[i] = new productionGUI(Productions[i], saveGame.productionValues[i], i);
                 i++;
             }
             else {
-                unlockProductions(i);
+                unlockProductions(i); //Else check if next is to be unlocked
                 break;
             }
         }
@@ -52,23 +52,27 @@ function unlockProductions(startAt) {
 function logOut() {
     for (i = 0; i < productionElements.length; i++) {
         saveGame.productionValues[i] = productionElements[i].values;
-        saveSaveGame(saveGame, token);
-        discardToken(token);
-        location.replace("index.html")
     }
+    saveSaveGame(saveGame, token);
+    discardToken(token);
+    location.replace("index.html");
 }
 function startProd(id){
-    if(productionElements[0].running == false){
+    if(productionElements[id].running == false){
     setTimeout(function(){ stopProd(id)}, productionElements[id].production.Timer);
-    productionElements[0].running = true;
+    productionElements[id].running = true;
     }
 }
 
 function stopProd(id){
     prodElement = productionElements[id];
+
     prodElement.values.ValueAmount += prodElement.values.Level * prodElement.values.Multiplier;
     if (prodElement.values.Auto) prodElement.startProd();
     prodElement.valueAmountText.innerHTML = prodElement.values.ValueAmount;
     prodElement.running = false;
-    unlockProductions(nextUnlock);
+    unlockProductions(nextUnlock); //Check if next prod is unlocked yet
+}
+function levelUp(id){
+    productionElements[id].levelUpFunc();
 }

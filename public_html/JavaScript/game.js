@@ -13,7 +13,7 @@ Productions = {
         "Currency": "Dirt",
         "ExpenseScale": 1.1,
         "RequiredAmount": "free",
-        "levelUpBaseCost": 1,
+        "levelUpBaseCost": 10,
         "Timer": 10
     },
     "1":{
@@ -21,7 +21,7 @@ Productions = {
         "Currency": "Sand",
         "ExpenseScale": 1.2,
         "RequiredAmount": 10,
-        "levelUpBaseCost": 10,
+        "levelUpBaseCost": 100,
         "Timer": 15000
     },
     "2":{
@@ -29,7 +29,7 @@ Productions = {
         "Currency": "Wood",
         "ExpenseScale": 1.5,
         "RequiredAmount": 1000,
-        "levelUpBaseCost": 100,
+        "levelUpBaseCost": 1000,
         "Timer": 30000
     }
 }

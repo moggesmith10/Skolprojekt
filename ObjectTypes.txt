@@ -16,4 +16,4 @@ Timer: int
 -
 
 ProductionGUI:
-startProd: void //When production starts
+levelUpCost: float
