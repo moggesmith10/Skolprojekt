@@ -1,21 +1,22 @@
-saveGame.productionValues[x]:
-ValueAmount: float
-Level: int
-Auto: bool
-Multiplier: float
+saveGame.productionValues[x] / this.values:
+valueAmount: float
+level: int
+auto: bool
+timerMultiplier: float
+valueMultiplier: float
+ownedUpgrades: array
 
 -
 
-Productions:
+Productions / this.production:
 requiredAmount: int
 Name: string
 Currency: string
 ExpenseScale: float
 Timer: int
-
     upgrades:
     type: int
-    //0: Multiplier (ex. val of 1.2 = 20% increase)
+    //0: Multiplier (ex. val of 0.2 = 20% increase)
     value: float
 -
 

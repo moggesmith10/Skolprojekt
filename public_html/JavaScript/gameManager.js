@@ -73,13 +73,18 @@ function startProd(id) {
 function stopProd(id) {
     prodElement = productionElements[id];
 
-    prodElement.values.valueAmount += prodElement.values.level * prodElement.values.multiplier;
-    if (prodElement.values.auto) prodElement.startProd();
-    prodElement.valueAmountText.innerHTML = prodElement.values.valueAmount;
-    prodElement.running = false;
+    prodElement.values.valueAmount += prodElement.values.level * prodElement.values.valueMultiplier;    //Add value
+    if (prodElement.values.auto) prodElement.startProd();                                               //If autostart
+    prodElement.updateAmount();                          //Update text
+    prodElement.running = false;                                                                        //Stop loading bar
     prodElement.loading.style.animationPlayState = "initial";
+    //Restart animation thing (https://stackoverflow.com/a/45036752)
+    prodElement.loading.style.animation = 'none';
+    prodElement.loading.offsetHeight; /* trigger reflow */
+    prodElement.loading.style.animation = null;
+    //----
     prodElement.loading.style.animationPlayState = "paused";
-    unlockProductions(nextUnlock); //Check if next prod is unlocked yet
+    unlockProductions(nextUnlock);                                                                      //Check if next prod is unlocked yet
 }
 function levelUp(id) {
     prodElement = productionElements[id];
@@ -94,12 +99,28 @@ function levelUp(id) {
         prodElement.values.valueAmount = Math.round(prodElement.values.valueAmount * 100) / 100;
 
         //Update GUI
-        prodElement.valueAmountText.innerHTML = prodElement.values.valueAmount;
+        prodElement.updateAmount();
         prodElement.updateLevel();
     }
 }
 function updateSaveGame() {
     for (i = 0; i < productionElements.length; i++) {
         saveGame.productionValues[i] = productionElements[i].values;
+    }
+}
+
+function upgrade(id, upgradeId) {
+    prodElement = productionElements[id];
+    upgradeObj = prodElement.production.upgrades[upgradeId];
+
+    if(prodElement.values.valueAmount >= upgradeObj.cost){
+        prodElement.values.valueAmount -= upgradeObj.cost;
+        switch(upgradeObj.type){
+            case 0:
+                prodElement.values.valueMultiplier += upgradeObj.value;
+            break; 
+        }
+        prodElement.updateAmount();
+        prodElement.values.ownedUpgrades[upgradeId] = true;//just make sure is set to something
     }
 }
