@@ -1,4 +1,4 @@
-let saveGame, productionElements = [], nextUnlock;
+let saveGame, productionElements = [], nextUnlock, openUpgradeWindow = null;
 
 function loaded() {
 
@@ -61,13 +61,37 @@ function logOut() {
 }
 function startProd(id) {
     prodElement = productionElements[id];
+    production = Productions[id];
+    prevElement = productionElements[id - 1];
 
     if (prodElement.running == false) {
-        setTimeout(function () { stopProd(id) }, prodElement.production.timer);
-        prodElement.running = true;
-        prodElement.loading.style.animationDuration = prodElement.production.timer / 1000 + "s";
-        prodElement.loading.style.animationPlayState = "initial";
+        if (id == 0) {
+            prodElement.running = true;
+            //prevProd.valueAmount -= element.requiredAmount;
+            _ = new timerHandler(prodElement);
+            setTimeout(function () { stopProd(id) }, prodElement.production.timer);
+        }
+        else if (prevElement.values.valueAmount >= production.requiredAmount) {//Does the same thing almost, but throws error if id == 0
+            prodElement.running = true;
+            prevElement.values.valueAmount -= production.requiredAmount * prodElement.values.valueMultiplier;
+            prevElement.updateAmount();
+            _ = new timerHandler(prodElement);
+            setTimeout(function () { stopProd(id) }, prodElement.production.timer);
+        }
     }
+}
+
+function timerHandler(prodElement) {
+    prodElement.i = 0;
+    this.x = 0;
+    prodElement.intervalId = setInterval(function () {
+        prodElement.button.ldBar.set(prodElement.i);
+        prodElement.i += 1;
+        if (prodElement.i >= 99) {
+            window.clearInterval(prodElement.intervalId);
+            prodElement.button.ldBar.set(0);
+        }
+    }, (prodElement.production.timer * prodElement.values.timeMultiplier) / 100)
 }
 
 function stopProd(id) {
@@ -77,13 +101,7 @@ function stopProd(id) {
     if (prodElement.values.auto) prodElement.startProd();                                               //If autostart
     prodElement.updateAmount();                          //Update text
     prodElement.running = false;                                                                        //Stop loading bar
-    prodElement.loading.style.animationPlayState = "initial";
-    //Restart animation thing (https://stackoverflow.com/a/45036752)
-    prodElement.loading.style.animation = 'none';
-    prodElement.loading.offsetHeight; /* trigger reflow */
-    prodElement.loading.style.animation = null;
-    //----
-    prodElement.loading.style.animationPlayState = "paused";
+
     unlockProductions(nextUnlock);                                                                      //Check if next prod is unlocked yet
 }
 function levelUp(id) {
@@ -113,14 +131,41 @@ function upgrade(id, upgradeId) {
     prodElement = productionElements[id];
     upgradeObj = prodElement.production.upgrades[upgradeId];
 
-    if(prodElement.values.valueAmount >= upgradeObj.cost){
+    if (prodElement.values.valueAmount >= upgradeObj.cost) {
         prodElement.values.valueAmount -= upgradeObj.cost;
-        switch(upgradeObj.type){
+        switch (upgradeObj.type) {
             case 0:
                 prodElement.values.valueMultiplier += upgradeObj.value;
-            break; 
+                break;
+            case 1:
+                prodElement.values.timeMultiplier -= upgradeObj.value;
+                break;
         }
         prodElement.updateAmount();
         prodElement.values.ownedUpgrades[upgradeId] = true;//just make sure is set to something
+        prodElement.upgradeElementConstruct(prodElement.upgradesElements[upgradeId], upgradeId, id);
     }
+}
+function showUpgradeScreen(id) {
+    if (openUpgradeWindow != null) {
+        addClass(openUpgradeWindow, "hidden");
+    }
+    openUpgradeWindow = productionElements[id].upgradeScreen;
+    removeClass(openUpgradeWindow, "hidden");
+}
+function closeUpgradeScreen() {
+    if (openUpgradeWindow != null) {
+        addClass(openUpgradeWindow, "hidden");
+        openUpgradeWindow = null;
+    }
+}
+function removeClass(element, className) {
+    element.className = element.className.replace(" " + className, "");
+}
+function addClass(element, className) {
+    element.className += " " + className
+}
+function hasClass(element, className) {
+    if (element.className.includes(className)) return true;
+    else return false;
 }

@@ -30,6 +30,16 @@ function productionGUI(production, values, id) {
                 this.values.timeMultiploer -= element.value
         }
     });
+    this.upgradeElementConstruct = function(nextUpgrade, id, elementId){
+        nextUpgrade.innerHTML = upgradeObj.name + "<br>" + upgradeObj.description + "<br>";
+        //JS big bad, no got isset() :,(
+        if (typeof (this.values.ownedUpgrades[id]) == "undefined") {
+            nextUpgrade.innerHTML += "<div onclick=\"upgrade(" + elementId + ", " + id + ")\">Buy</div>";
+        }
+        else {
+            nextUpgrade.innerHTML += "Owned";
+        }
+    }
 
     //Prep element
     this.element = document.createElement("div");
@@ -41,8 +51,12 @@ function productionGUI(production, values, id) {
     //Button
     this.button = document.createElement("div");
     this.button.setAttribute("onclick", "startProd(" + id + ")");
-    this.button.innerHTML = "click";
+    this.button.setAttribute("class", "ldBar label-center");
+    this.button.setAttribute("data-value", "0");
+    this.button.setAttribute("data-preset", "circle")
+    //this.button.innerHTML = "click";
     this.element.appendChild(this.button);
+    this.button.ldBar = new ldBar(this.button);
 
     //Currency
     this.value = document.createElement("div");
@@ -60,28 +74,27 @@ function productionGUI(production, values, id) {
     this.levelUp.setAttribute("onclick", "levelUp(" + this.id + ")");
     this.updateLevel();
 
-    this.loading = document.createElement("div");
-    this.loading.setAttribute("class", "loading");
-    this.element.appendChild(this.loading);
-    this.loading.style.animationPlayState = "paused";
-
     this.upgradeScreen = document.createElement("div");
     this.upgradeScreen.setAttribute("class", "upgradeScreen hidden");
     this.element.appendChild(this.upgradeScreen);
+
+    this.upgradeScreen.closeButton = document.createElement("div");
+    this.upgradeScreen.closeButton.innerHTML = "x";
+    this.upgradeScreen.closeButton.setAttribute("onclick", "closeUpgradeScreen()");
+    this.upgradeScreen.appendChild(this.upgradeScreen.closeButton);
+    this.upgradeScreen.closeButton.setAttribute("class", "closeButton");
 
     this.upgradesElements = [];
     for (i = 0; i < this.production.upgrades.length; i++) {
         nextUpgrade = document.createElement("div");
         upgradeObj = this.production.upgrades[i];
         this.upgradeScreen.appendChild(nextUpgrade);
-        nextUpgrade.innerHTML = upgradeObj.name + "<br>" + upgradeObj.description + "<br>";
-        //JS big bad, no got isset() :,(
-        if (typeof (this.values.ownedUpgrades[i]) == "undefined") {
-            nextUpgrade.innerHTML += "<div onclick=\"upgrade(" + id + ", " + i + ")\">Buy</div>";
-        }
-        else {
-            nextUpgrade.innerHTML += "Owned";
-        }
+        this.upgradeElementConstruct(nextUpgrade, i, this.id);
         this.upgradesElements.push(nextUpgrade);
     }
+    this.upgradeButton = document.createElement("div");
+    this.element.appendChild(this.upgradeButton);
+    this.upgradeButton.setAttribute("onclick", "showUpgradeScreen(" + this.id + ")");
+    this.upgradeButton.innerHTML = "Upgrades";
+    
 }

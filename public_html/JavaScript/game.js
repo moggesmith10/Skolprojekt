@@ -11,12 +11,12 @@ emptyProductionValues = {
 //Constant values
 Productions = {
     "0": {
-        "name": "Production 1",
-        "currency": "Dirt",
-        "expenseScale": 1.1,
-        "requiredAmount": "free",
-        "levelUpBaseCost": 10,
-        "timer": 10,
+        "name": "Production 1", //Name of Production
+        "currency": "Dirt", //Name of currency
+        "expenseScale": 1.1, //Levelupcost = levelUpCost * expensescale^level (i think, no good at math, logmarithmic atleast)
+        "requiredAmount": "free", //Required until vissible and cost of prev production to run once
+        "levelUpBaseCost": 10, //Cost for first level up (times expenseScale once, might fix eventually)
+        "timer": 1000, //milliseconds
         "upgrades": [
             {
                 "type": 0,
@@ -26,11 +26,11 @@ Productions = {
                 "cost": 10
             },
             {
-            "type": 1,
-            "value": 0.1,
-            "name": "big upgrade",
-            "description": "this be a big upgraed that does teh 10 % boozt in speeeeed",
-            "cost": 10
+                "type": 1,
+                "value": 0.1,
+                "name": "big upgrade",
+                "description": "this be a big upgraed that does teh 10 % boozt in speeeeed",
+                "cost": 10
 
             }
         ]
@@ -41,7 +41,7 @@ Productions = {
         "expenseScale": 1.2,
         "requiredAmount": 10,
         "levelUpBaseCost": 100,
-        "timer": 10,
+        "timer": 2000,
         "upgrades": []
     },
     "2": {
