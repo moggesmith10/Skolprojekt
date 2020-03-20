@@ -85,11 +85,11 @@ function timerHandler(prodElement) {
     prodElement.i = 0;
     this.x = 0;
     prodElement.intervalId = setInterval(function () {
-        prodElement.button.ldBar.set(prodElement.i);
+        prodElement.button.ldBar.set(prodElement.i, true);
         prodElement.i += 1;
         if (prodElement.i >= 99) {
             window.clearInterval(prodElement.intervalId);
-            prodElement.button.ldBar.set(0);
+            prodElement.button.ldBar.set(0, true);
         }
     }, (prodElement.production.timer * prodElement.values.timeMultiplier) / 100)
 }
@@ -98,10 +98,9 @@ function stopProd(id) {
     prodElement = productionElements[id];
 
     prodElement.values.valueAmount += prodElement.values.level * prodElement.values.valueMultiplier;    //Add value
-    if (prodElement.values.auto) prodElement.startProd();                                               //If autostart
     prodElement.updateAmount();                          //Update text
     prodElement.running = false;                                                                        //Stop loading bar
-
+    if (prodElement.values.auto) startProd(id);                                               //If autostart
     unlockProductions(nextUnlock);                                                                      //Check if next prod is unlocked yet
 }
 function levelUp(id) {

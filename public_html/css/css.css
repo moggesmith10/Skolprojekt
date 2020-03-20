@@ -2,21 +2,20 @@
     font-family: sans-serif;
 }
 .production{
-    border: 1px solid black;
+    border: 2px solid black;
     display: inline-block;
-    width: 80vw;
-}
-.production:only-child{
-    width: auto;
+    width: 50vw;
+    margin-top: 2vh;
 }
 .upgradeScreen{
     /*min-height: 10vw;*/
     width: 50vw;
     position: absolute;
-    left: 25%;
+    left: 0vw;
     top: 25%;
     border: black 5px solid;
     background-color: white;
+    z-index: 5;
 }
 .upgradeScreen > .closeButton{
     float: right;
@@ -28,4 +27,15 @@
 }
 .hidden{
     visibility: collapse;
+}
+main{
+    position: relative;
+    left:25vw;
+}
+.title{
+    font-size: 30px;
+    border-bottom: 1px solid gray;
+}
+.upgradeItem{
+    margin-bottom: 5vh;
 }

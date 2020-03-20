@@ -16,7 +16,8 @@ ExpenseScale: float
 Timer: int
     upgrades:
     type: int
-    //0: Multiplier (ex. val of 0.2 = 20% increase)
+    //0: Value Multiplier (ex. val of 0.2 = 20% increase)
+    //1: Time Multiplier (ex val of 0.1 = 10% decrease)
     value: float
 -
 

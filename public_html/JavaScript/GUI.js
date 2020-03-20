@@ -17,7 +17,7 @@ function productionGUI(production, values, id) {
     this.updateAmount = function () {
         this.valueAmountText.innerHTML = Math.round(this.values.valueAmount);
     }
-    this.breakLine = function(){
+    this.breakLine = function () {
         this.element.innerHTML += "<br>";
     }
 
@@ -30,7 +30,7 @@ function productionGUI(production, values, id) {
                 this.values.timeMultiploer -= element.value
         }
     });
-    this.upgradeElementConstruct = function(nextUpgrade, id, elementId){
+    this.upgradeElementConstruct = function (nextUpgrade, id, elementId) {
         nextUpgrade.innerHTML = upgradeObj.name + "<br>" + upgradeObj.description + "<br>";
         //JS big bad, no got isset() :,(
         if (typeof (this.values.ownedUpgrades[id]) == "undefined") {
@@ -46,14 +46,22 @@ function productionGUI(production, values, id) {
     productionsElement.appendChild(this.element);
     this.element.setAttribute("id", "child" + productionsElement.children.length);
     this.element.setAttribute("class", "production");
+    this.element.style.backgroundColor = this.production.colorSecondary;
 
     //Create HTML
+    this.title = document.createElement("div");
+    this.title.setAttribute("class", "title");
+    this.title.style.backgroundColor = this.production.color;
+    this.title.innerHTML = this.production.name;
+    this.element.appendChild(this.title);
+
     //Button
     this.button = document.createElement("div");
     this.button.setAttribute("onclick", "startProd(" + id + ")");
     this.button.setAttribute("class", "ldBar label-center");
     this.button.setAttribute("data-value", "0");
-    this.button.setAttribute("data-preset", "circle")
+    this.button.setAttribute("data-preset", "circle");
+
     //this.button.innerHTML = "click";
     this.element.appendChild(this.button);
     this.button.ldBar = new ldBar(this.button);
@@ -90,11 +98,12 @@ function productionGUI(production, values, id) {
         upgradeObj = this.production.upgrades[i];
         this.upgradeScreen.appendChild(nextUpgrade);
         this.upgradeElementConstruct(nextUpgrade, i, this.id);
+        nextUpgrade.setAttribute("class", "upgradeItem");
         this.upgradesElements.push(nextUpgrade);
     }
     this.upgradeButton = document.createElement("div");
     this.element.appendChild(this.upgradeButton);
     this.upgradeButton.setAttribute("onclick", "showUpgradeScreen(" + this.id + ")");
     this.upgradeButton.innerHTML = "Upgrades";
-    
+
 }
